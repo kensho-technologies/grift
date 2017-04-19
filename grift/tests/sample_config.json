@@ -1,0 +1,6 @@
+{
+  "STRING_PROP": "1",
+  "INT_PROP": "2",
+  "ANY_TYPE_PROP": [1, 2, 3],
+  "NOT_A_PROPERTY": "boo"
+}
