@@ -149,30 +149,30 @@ Any `ConfigProperty` can be excluded from `varz` by specifying `exclude_from_var
 
 ### Maximizing Startup Guarantees
 
-Your config should be setup to maximize startup guarantees of your app having the right configuration set. 
-There is a NetworkType property type that attempts to make a basic connection with whatever network resouce is specified. 
+You may want to set up your config class to maximize startup guarantees of having the right configuration set. 
+There are a few property types that attempt to make a basic connection with whatever network resouce is specified. 
 The supported protocols are http, postgres, redis, amqp, and etcd. By default, the validator will back off 5 
 times before giving up, but that can be overridden with the 'max_tries' kwarg.
- 
+
 For example:
 
 ```python
 class AppConfig(BaseConfig):
-     DATABASE_URL = ConfigProperty(property_type=NetworkType(network_type='postgres'),
-                                   default='postgres://...')
-     REDIS_URL = ConfigProperty(property_type=NetworkType(network_type='redis'))
+     DATABASE_URL = ConfigProperty(property_type=PostgresType(), default='postgres://...')
+     REDIS_URL = ConfigProperty(property_type=RedisType(max_tries=1))
      SHARED_CONFIG =  ConfigProperty(property_type=StringType(), default='A')
 
 
 class DeploymentConfig(AppConfig):
-    DATABASE_URL = ConfigProperty(property_type=NetworkType(network_type='postgres'))
+    DATABASE_URL = ConfigProperty(property_type=PostgresType())
 
 
 ConfigCls = AppConfig if deploy.env not in [STAGE, PROD] else DeployedConfig
 config = ConfigCls(loaders)  
 ```
 
-The important distinction is that DeploymentConfig will fail to initialize if `DATABASE_URL` isn't set.
+An important distinction in this example is that the config schema changes based on the deploy env. For the
+staging and production environments, `DeploymentConfig` will fail to initialize if `DATABASE_URL` isn't set.
 
 
 # License
