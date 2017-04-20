@@ -1,3 +1,4 @@
+# Copyright 2017 Kensho Technologies, Inc.
 import os
 
 

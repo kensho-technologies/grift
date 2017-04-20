@@ -1,3 +1,4 @@
+# Copyright 2017 Kensho Technologies, Inc.
 from abc import ABCMeta, abstractmethod
 import json
 import os

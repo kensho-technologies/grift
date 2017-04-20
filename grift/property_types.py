@@ -1,3 +1,4 @@
+# Copyright 2017 Kensho Technologies, Inc.
 from contextlib import closing, contextmanager
 import json
 import six
