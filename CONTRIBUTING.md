@@ -14,4 +14,4 @@ Each contributor is required to agree to our Contributor License Agreement, to e
 
 ## Style Guide
 
-[Fill out style guide info]
+Make sure your code conforms to style by running `pycodestyle grift/` This should pass with no warnings (see our custom configuration in the `[pycodestyle]` section of `setup.cfg`).
