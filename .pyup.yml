@@ -1,0 +1,9 @@
+# docs here: https://pyup.io/docs/configuration/
+
+update: insecure  # only update known-insecure packages
+
+assignees:
+  - cranti
+  - obi1kenobi
+
+pr_prefix: "pyup: "
