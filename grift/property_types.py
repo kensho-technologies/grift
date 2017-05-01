@@ -54,6 +54,12 @@ class ListType(BaseType):
         to_native = self.member_type.to_native if self.member_type is not None else lambda x: x
         return [to_native(item) for item in value_list]
 
+    def validate_member_type(self, value):
+        """Validate each member of the list, if member_type exists"""
+        if self.member_type:
+            for item in value:
+                self.member_type.validate(item)
+
     def validate_length(self, value):
         """Validate the length of value, if min_length or max_length was specified"""
         list_len = len(value) if value else 0
