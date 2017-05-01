@@ -1,4 +1,4 @@
-|Build Status| |Coverage Status|
+|Build Status| |Coverage Status| |Pyup Updates| |Py3 Ready|
 
 grift
 =====
@@ -231,3 +231,9 @@ Copyright 2017 Kensho Technologies, Inc.
    :target: https://travis-ci.org/kensho-technologies/grift
 .. |Coverage Status| image:: https://coveralls.io/repos/github/kensho-technologies/grift/badge.svg?branch=master
    :target: https://coveralls.io/github/kensho-technologies/grift?branch=master
+.. |Pyup Updates| image:: https://pyup.io/repos/github/kensho-technologies/grift/shield.svg
+     :target: https://pyup.io/repos/github/kensho-technologies/grift/
+     :alt: Updates
+.. |Py3 Ready| image:: https://pyup.io/repos/github/kensho-technologies/grift/python-3-shield.svg
+     :target: https://pyup.io/repos/github/kensho-technologies/grift/
+     :alt: Python 3
