@@ -2,7 +2,7 @@
 import unittest
 
 from schematics.exceptions import ConversionError, ValidationError
-from schematics.types import StringType
+from schematics.types import StringType, IntType
 
 from grift.property_types import DictType, ListType, HTTPType
 
@@ -90,6 +90,17 @@ class TestListType(unittest.TestCase):
 
         with self.assertRaises(ValidationError):
             list_type.validate(None)
+
+    def test_validate_member_type(self):
+        list_type = ListType(member_type=IntType(choices=[1, 2]))
+
+        list_type.validate([1, 2])
+
+        with self.assertRaises(ConversionError):
+            list_type.validate(['a', 'b'])
+
+        with self.assertRaises(ValidationError):
+            list_type.validate([1, 3])
 
 
 class TestHTTPType(unittest.TestCase):
