@@ -69,6 +69,10 @@ class EnvLoader(DictLoader):
         self._source = os.environ
 
 
+class VaultException(Exception):
+    """Custom exception raised if Vault response contains error message"""
+
+
 class VaultTokenLoader(DictLoader):
     def __init__(self, url, path, token):
         """Load secrets from a Vault path, using token authentication
@@ -97,6 +101,9 @@ class VaultTokenLoader(DictLoader):
         resp = requests.get(url, headers=self._headers)
         resp.raise_for_status()
         data = resp.json()
+        if data.get('errors'):
+            raise VaultException(u'Error fetching Vault secrets from path {}: {}'
+                                 .format(self._path, data['errors']))
         return data['data']
 
     def reload(self):
@@ -110,17 +117,17 @@ class VaultTokenLoader(DictLoader):
         resp.raise_for_status()
         data = resp.json()
         if data.get('errors'):
-            raise ValueError(u'Error looking up vault token: {}'.format(data['errors']))
+            raise VaultException(u'Error looking up Vault token: {}'.format(data['errors']))
         return data
 
     def renew_token(self):
-        """Convenience method: renew vault token"""
+        """Convenience method: renew Vault token"""
         url = '{}/v1/auth/token/renew-self'.format(self._vault_url)
         resp = requests.get(url, headers=self._headers)
         resp.raise_for_status()
         data = resp.json()
         if data.get('errors'):
-            raise ValueError(u'Error renewing vault token: {}'.format(data['errors']))
+            raise VaultException(u'Error renewing Vault token: {}'.format(data['errors']))
         return data
 
 
@@ -147,6 +154,8 @@ class VaultAppRoleLoader(VaultTokenLoader):
         resp = requests.post(url, data={'role_id': self._role_id, 'secret_id': self._secret_id})
         resp.raise_for_status()
         data = resp.json()
+        if data.get('errors'):
+            raise VaultException(u'Error fetching Vault token: {}'.format(data['errors']))
         return data['auth']['client_token']
 
 
