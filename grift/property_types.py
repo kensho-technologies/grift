@@ -135,7 +135,7 @@ def _disconnecting(obj):
     try:
         yield obj
     finally:
-        obj.disconnect()
+        obj.connection_pool.disconnect()
 
 
 class RedisType(NetworkType):
