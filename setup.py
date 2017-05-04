@@ -7,6 +7,7 @@ setup(name=package_name,
       packages=find_packages(),
       package_data={package_name + '.tests': ['*.json']},
       install_requires=[
-          'schematics==1.1.1'
+          'schematics==1.1.1',
+          'requests==2.13.0'
       ],
       )
