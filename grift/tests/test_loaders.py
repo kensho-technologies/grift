@@ -2,7 +2,7 @@ import mock
 import os
 from unittest import TestCase
 
-from grift.loaders import JsonFileLoader, EnvLoader, DictLoader, VaultTokenLoader, VaultException
+from grift.loaders import JsonFileLoader, EnvLoader, DictLoader, VaultLoader, VaultException
 from grift.utils import in_same_dir
 
 SAMPLE_FILE_PATH = in_same_dir(__file__, 'sample_config.json')
@@ -65,13 +65,13 @@ class TestVaultLoader(TestCase):
     """Testing logic of accessing Vault via http requests; heavily mocked"""
 
     def setUp(self):
-        self.url = 'fake_vault_url'
-        self.path = 'fake_vault_path'
+        self.url = 'https://fake_vault.url'
+        self.path = 'fake/vault/path'
         self.token = 'fake_token'
 
         self.expected_header = {'X-Vault-Token': self.token}
 
-    def test_token_fetch_secrets(self):
+    def test_token_constructor(self):
         secrets = {
             'hello': 'world',
             'foo': 'bar'
@@ -80,7 +80,7 @@ class TestVaultLoader(TestCase):
         expected_url = '{}/v1/{}'.format(self.url, self.path)
 
         with mock.patch('requests.get', return_value=_mock_response({'data': secrets})) as mock_get:
-            loader = VaultTokenLoader(self.url, self.path, self.token)
+            loader = VaultLoader.from_token(self.url, self.path, self.token)
 
             mock_get.assert_called_once_with(expected_url, headers=self.expected_header)
 
@@ -95,7 +95,7 @@ class TestVaultLoader(TestCase):
         expected_url = '{}/v1/auth/token/lookup-self'.format(self.url)
 
         with mock.patch('requests.get', return_value=_mock_response({'data': {}})):
-            loader = VaultTokenLoader(self.url, self.path, self.token)
+            loader = VaultLoader.from_token(self.url, self.path, self.token)
 
         with mock.patch('requests.get', return_value=_mock_response({'foo': 'bar'})) as mock_get:
             resp = loader.lookup_token()
@@ -107,7 +107,7 @@ class TestVaultLoader(TestCase):
         expected_url = '{}/v1/auth/token/lookup-self'.format(self.url)
 
         with mock.patch('requests.get', return_value=_mock_response({'data': {}})):
-            loader = VaultTokenLoader(self.url, self.path, self.token)
+            loader = VaultLoader.from_token(self.url, self.path, self.token)
 
         with mock.patch('requests.get', return_value=_mock_response({'errors': 'foo'})) as mock_get:
             with self.assertRaises(VaultException):
@@ -119,7 +119,7 @@ class TestVaultLoader(TestCase):
         expected_url = '{}/v1/auth/token/renew-self'.format(self.url)
 
         with mock.patch('requests.get', return_value=_mock_response({'data': {}})):
-            loader = VaultTokenLoader(self.url, self.path, self.token)
+            loader = VaultLoader.from_token(self.url, self.path, self.token)
 
         with mock.patch('requests.get', return_value=_mock_response({'foo': 'bar'})) as mock_get:
             loader.renew_token()
@@ -129,7 +129,7 @@ class TestVaultLoader(TestCase):
         expected_url = '{}/v1/auth/token/renew-self'.format(self.url)
 
         with mock.patch('requests.get', return_value=_mock_response({'data': {}})):
-            loader = VaultTokenLoader(self.url, self.path, self.token)
+            loader = VaultLoader.from_token(self.url, self.path, self.token)
 
         with mock.patch('requests.get', return_value=_mock_response({'errors': 'foo'})) as mock_get:
             with self.assertRaises(VaultException):

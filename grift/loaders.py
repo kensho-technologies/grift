@@ -73,46 +73,98 @@ class VaultException(Exception):
     """Custom exception raised if Vault response contains error message"""
 
 
-class VaultTokenLoader(DictLoader):
-    def __init__(self, url, path, token):
-        """Load secrets from a Vault path, using token authentication
+def _url_joiner(*args):
+    """Helper: construct an url by joining sections with /"""
+    return '/'.join(s.strip('/') for s in args)
 
-        See https://www.vaultproject.io/docs
+
+class VaultLoader(DictLoader):
+    """Load secrets from a vault path"""
+
+    def __init__(self, source_dict, url, path, token):
+        """Initializer.
 
         Args:
+            source_dict: used to initialize the class. Use constructors to read from Vault.
             url: Vault url
-            path: Vault path to fetch secrets from
+            path: Vault path where secrets are stored
             vault_token: token (must have access to vault path)
         """
         self._vault_url = url
         self._path = path
         self._token = token
-        source_dict = self._fetch_secrets()
-        super(VaultTokenLoader, self).__init__(source_dict)
+        super(VaultLoader, self).__init__(source_dict)
+
+    @classmethod
+    def from_token(cls, url, path, token):
+        """Constructor: use token authentication to read secrets from a Vault path
+
+        See https://www.vaultproject.io/docs/auth/token.html
+
+        Args:
+            url: Vault url
+            path: Vault path where secrets are stored
+            vault_token: token (must have access to vault path)
+        """
+        source_dict = cls._fetch_secrets(url, path, token)
+        return cls(source_dict, url, path, token)
+
+    @classmethod
+    def from_app_role(cls, url, path, role_id, secret_id):
+        """Constructor: use AppRole authentication to read secrets from a Vault path
+
+        See https://www.vaultproject.io/docs/auth/approle.html
+
+        Args:
+            url: Vault url
+            path: Vault path where secrets are stored
+            role_id: Vault RoleID
+            secret_id: Vault SecretID
+        """
+        token = cls._fetch_app_role_token(url, role_id, secret_id)
+        source_dict = cls._fetch_secrets(url, path, token)
+        return cls(source_dict, url, path, token)
+
+    @staticmethod
+    def _get_headers(token):
+        """Return token header to access vault"""
+        return {'X-Vault-Token': token}
 
     @property
     def _headers(self):
         """Return token header to access vault"""
-        return {'X-Vault-Token': self._token}
+        return self._get_headers(self._token)
 
-    def _fetch_secrets(self):
+    @staticmethod
+    def _fetch_secrets(vault_url, path, token):
         """Read data from the vault path"""
-        url = '{}/v1/{}'.format(self._vault_url, self._path)
-        resp = requests.get(url, headers=self._headers)
+        url = _url_joiner(vault_url, 'v1', path)
+        resp = requests.get(url, headers=VaultLoader._get_headers(token))
         resp.raise_for_status()
         data = resp.json()
         if data.get('errors'):
             raise VaultException(u'Error fetching Vault secrets from path {}: {}'
-                                 .format(self._path, data['errors']))
+                                 .format(path, data['errors']))
         return data['data']
+
+    @staticmethod
+    def _fetch_app_role_token(vault_url, role_id, secret_id):
+        """Get a Vault token, using the RoleID and SecretID"""
+        url = _url_joiner(vault_url, 'v1/auth/approle/login')
+        resp = requests.post(url, data={'role_id': role_id, 'secret_id': secret_id})
+        resp.raise_for_status()
+        data = resp.json()
+        if data.get('errors'):
+            raise VaultException(u'Error fetching Vault token: {}'.format(data['errors']))
+        return data['auth']['client_token']
 
     def reload(self):
         """Reread secrets from the vault path"""
-        self._source = self._fetch_secrets()
+        self._source = self._fetch_secrets(self._vault_url, self._path, self._token)
 
     def lookup_token(self):
         """Convenience method: look up the vault token"""
-        url = '{}/v1/auth/token/lookup-self'.format(self._vault_url)
+        url = _url_joiner(self._vault_url, 'v1/auth/token/lookup-self')
         resp = requests.get(url, headers=self._headers)
         resp.raise_for_status()
         data = resp.json()
@@ -122,41 +174,13 @@ class VaultTokenLoader(DictLoader):
 
     def renew_token(self):
         """Convenience method: renew Vault token"""
-        url = '{}/v1/auth/token/renew-self'.format(self._vault_url)
+        url = _url_joiner(self._vault_url, 'v1/auth/token/renew-self')
         resp = requests.get(url, headers=self._headers)
         resp.raise_for_status()
         data = resp.json()
         if data.get('errors'):
             raise VaultException(u'Error renewing Vault token: {}'.format(data['errors']))
         return data
-
-
-class VaultAppRoleLoader(VaultTokenLoader):
-    def __init__(self, url, path, role_id, secret_id):
-        """Load secrets from a Vault path, using the AppRole auth backend
-
-        See https://www.vaultproject.io/docs/auth/approle.html
-
-        Args:
-            url: Vault url
-            path: Vault path to fetch secrets from
-            role_id: Vault RoleID
-            secret_id: Vault SecretID
-        """
-        self._role_id = role_id
-        self._secret_id = secret_id
-        token = self._fetch_token()
-        super(VaultAppRoleLoader, self).__init__(url, path, token=token)
-
-    def _fetch_token(self):
-        """Get a Vault token, using the RoleID and SecretID"""
-        url = '{}/v1/auth/approle/login'.format(self._vault_url)
-        resp = requests.post(url, data={'role_id': self._role_id, 'secret_id': self._secret_id})
-        resp.raise_for_status()
-        data = resp.json()
-        if data.get('errors'):
-            raise VaultException(u'Error fetching Vault token: {}'.format(data['errors']))
-        return data['auth']['client_token']
 
 
 # Default loaders, for convenience. Prefers the EnvLoader (env vars), with a fallback on a json
