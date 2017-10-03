@@ -4,11 +4,12 @@ import json
 import os
 
 import requests
+import six
 
-
+@six.add_metaclass(ABCMeta)
 class AbstractLoader(object):
     """Base class for loading configuration settings from a source"""
-    __metaclass__ = ABCMeta
+    pass
 
     def reload(self):
         """Reload values from the designated source, if possible"""
@@ -143,7 +144,7 @@ class VaultLoader(DictLoader):
         resp.raise_for_status()
         data = resp.json()
         if data.get('errors'):
-            raise VaultException(u'Error fetching Vault secrets from path {}: {}'
+            raise VaultException(six.u('Error fetching Vault secrets from path {}: {}')
                                  .format(path, data['errors']))
         return data['data']
 
@@ -155,7 +156,7 @@ class VaultLoader(DictLoader):
         resp.raise_for_status()
         data = resp.json()
         if data.get('errors'):
-            raise VaultException(u'Error fetching Vault token: {}'.format(data['errors']))
+            raise VaultException(six.u('Error fetching Vault token: {}'.format(data['errors'])))
         return data['auth']['client_token']
 
     def reload(self):
@@ -169,7 +170,7 @@ class VaultLoader(DictLoader):
         resp.raise_for_status()
         data = resp.json()
         if data.get('errors'):
-            raise VaultException(u'Error looking up Vault token: {}'.format(data['errors']))
+            raise VaultException(six.u('Error looking up Vault token: {}'.format(data['errors'])))
         return data
 
     def renew_token(self):
@@ -179,7 +180,7 @@ class VaultLoader(DictLoader):
         resp.raise_for_status()
         data = resp.json()
         if data.get('errors'):
-            raise VaultException(u'Error renewing Vault token: {}'.format(data['errors']))
+            raise VaultException(six.u('Error renewing Vault token: {}'.format(data['errors'])))
         return data
 
 

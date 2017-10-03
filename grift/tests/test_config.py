@@ -1,5 +1,6 @@
 # Copyright 2017 Kensho Technologies, Inc.
 import os
+import six
 from unittest import TestCase
 
 from schematics.exceptions import ConversionError
@@ -139,7 +140,7 @@ class TestValidatingConfig(TestCase):
             'ANY_TYPE_PROP': [1, 2, 3],
         }
         expected_dict = {
-            'STRING_PROP': u'1',
+            'STRING_PROP': six.u('1'),
             'INT_PROP': 2,
             'ANY_TYPE_PROP': [1, 2, 3],
             'DIFFERENT_KEY_PROP': None,
