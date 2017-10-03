@@ -4,6 +4,7 @@ from unittest import TestCase
 
 from schematics.exceptions import ConversionError
 from schematics.types import StringType, IntType
+import six
 
 from grift.config import BaseConfig, ConfigProperty
 from grift.loaders import DictLoader, EnvLoader, JsonFileLoader
@@ -139,7 +140,7 @@ class TestValidatingConfig(TestCase):
             'ANY_TYPE_PROP': [1, 2, 3],
         }
         expected_dict = {
-            'STRING_PROP': u'1',
+            'STRING_PROP': six.u('1'),
             'INT_PROP': 2,
             'ANY_TYPE_PROP': [1, 2, 3],
             'DIFFERENT_KEY_PROP': None,

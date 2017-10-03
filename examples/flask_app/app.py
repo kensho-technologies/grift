@@ -17,15 +17,15 @@ import logging
 
 import flask
 
-from config import app_config
+from .config import app_config
 
 app = flask.Flask(__name__)
 # Set the debug level and configure logging
 app.debug = app_config.DEBUG
 app.logger.setLevel(app_config.LOG_LEVEL)
 
-# NOT IMPLEMENTED: 
-# - Use a Postgres database, using app_config.DATABASE_URL as the 
+# NOT IMPLEMENTED:
+# - Use a Postgres database, using app_config.DATABASE_URL as the
 #   database url
 # - Use another API with app_config.API_TOKEN and app_config.API_URL
 
