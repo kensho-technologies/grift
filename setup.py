@@ -8,6 +8,7 @@ setup(name=package_name,
       package_data={package_name + '.tests': ['*.json']},
       install_requires=[
           'schematics==1.1.1',
-          'requests==2.13.0'
+          'requests==2.13.0',
+          'six==1.11.0',
       ],
       )
