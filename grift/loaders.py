@@ -144,7 +144,7 @@ class VaultLoader(DictLoader):
         resp.raise_for_status()
         data = resp.json()
         if data.get('errors'):
-            raise VaultException('Error fetching Vault secrets from path {}: {}'
+            raise VaultException(u'Error fetching Vault secrets from path {}: {}'
                                  .format(path, data['errors']))
         return data['data']
 
@@ -156,7 +156,7 @@ class VaultLoader(DictLoader):
         resp.raise_for_status()
         data = resp.json()
         if data.get('errors'):
-            raise VaultException('Error fetching Vault token: {}'.format(data['errors']))
+            raise VaultException(u'Error fetching Vault token: {}'.format(data['errors']))
         return data['auth']['client_token']
 
     def reload(self):
@@ -170,7 +170,7 @@ class VaultLoader(DictLoader):
         resp.raise_for_status()
         data = resp.json()
         if data.get('errors'):
-            raise VaultException('Error looking up Vault token: {}'.format(data['errors']))
+            raise VaultException(u'Error looking up Vault token: {}'.format(data['errors']))
         return data
 
     def renew_token(self):
@@ -180,7 +180,7 @@ class VaultLoader(DictLoader):
         resp.raise_for_status()
         data = resp.json()
         if data.get('errors'):
-            raise VaultException('Error renewing Vault token: {}'.format(data['errors']))
+            raise VaultException(u'Error renewing Vault token: {}'.format(data['errors']))
         return data
 
 

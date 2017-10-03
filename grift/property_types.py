@@ -20,7 +20,7 @@ class DictType(BaseType):
             if isinstance(native_value, dict):
                 return native_value
             else:
-                raise ConversionError(six.u('Cannot load value as a dict: {}'.format(value)))
+                raise ConversionError(u'Cannot load value as a dict: {}'.format(value))
 
 
 class ListType(BaseType):
@@ -66,11 +66,11 @@ class ListType(BaseType):
 
         if self.max_length is not None and list_len > self.max_length:
             raise ValidationError(
-                six.u('List has {} values; max length is {}'.format(list_len, self.max_length)))
+                u'List has {} values; max length is {}'.format(list_len, self.max_length))
 
         if self.min_length is not None and list_len < self.min_length:
             raise ValidationError(
-                six.u('List has {} values; min length is {}'.format(list_len, self.min_length)))
+                u'List has {} values; min length is {}'.format(list_len, self.min_length))
 
 
 class NetworkType(StringType):
