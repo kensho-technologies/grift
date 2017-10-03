@@ -4,11 +4,12 @@ import json
 import os
 
 import requests
+import six
 
 
+@six.add_metaclass(ABCMeta)
 class AbstractLoader(object):
     """Base class for loading configuration settings from a source"""
-    __metaclass__ = ABCMeta
 
     def reload(self):
         """Reload values from the designated source, if possible"""

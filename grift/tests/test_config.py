@@ -4,6 +4,7 @@ from unittest import TestCase
 
 from schematics.exceptions import ConversionError
 from schematics.types import StringType, IntType
+import six
 
 from grift.config import BaseConfig, ConfigProperty
 from grift.loaders import DictLoader, EnvLoader, JsonFileLoader
