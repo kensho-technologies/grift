@@ -135,7 +135,7 @@ class TestValidatingConfig(TestCase):
 
     def test_as_dict(self):
         config_dict = {
-            'STRING_PROP': u'1',
+            'STRING_PROP': '1',
             'INT_PROP': '2',
             'ANY_TYPE_PROP': [1, 2, 3],
         }
