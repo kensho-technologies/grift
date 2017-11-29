@@ -17,7 +17,7 @@ import logging
 
 import flask
 
-from .config import app_config
+from config import app_config
 
 app = flask.Flask(__name__)
 # Set the debug level and configure logging
