@@ -2,6 +2,11 @@
 
 update: insecure  # only update known-insecure packages
 
+search: False  # do not search for requirements files
+
+requirements:
+  - requirements.txt  # used only for dev and testing, but should be kept up to date
+
 assignees:
   - cranti
   - obi1kenobi
