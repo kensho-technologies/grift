@@ -76,7 +76,15 @@ class ListType(BaseType):
 class NetworkType(StringType):
 
     def __init__(self, max_tries=5, max_wait=10, *args, **kwargs):
-        """Validation type for external resources"""
+        """Validation type for external resources
+
+        Attempts to connect to the resource, backing off on failure.
+
+        Args:
+            max_tries: Max number of times to attempt a connection before failing
+            max_wait: Max number of seconds to wait between connection attempts. This can be
+               used to cap the exponential backoff.
+        """
         self._max_tries = max_tries
         if self._max_tries < 1:
             raise TypeError('max_tries must be a positive integer')
