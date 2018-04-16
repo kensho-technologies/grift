@@ -224,7 +224,7 @@ distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
 KIND, either express or implied. See the License for the specific
 language governing permissions and limitations under the License.
 
-Copyright 2017 Kensho Technologies, Inc.
+Copyright 2017 Kensho Technologies, LLC.
 
 
 .. |Build Status| image:: https://travis-ci.org/kensho-technologies/grift.svg?branch=master
