@@ -1,4 +1,4 @@
-# Copyright 2017 Kensho Technologies, Inc.
+# Copyright 2017 Kensho Technologies, LLC.
 from abc import ABCMeta, abstractmethod
 import json
 import os
