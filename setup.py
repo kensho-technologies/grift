@@ -3,7 +3,7 @@ from setuptools import find_packages, setup
 package_name = 'grift'
 
 setup(name=package_name,
-      version='0.7.0',
+      version='0.7.1',
       description='A clean approach to app configuration',
       keywords='app config configuration schema python',
       maintainer_email='grift-maintainer@kensho.com',
@@ -13,6 +13,6 @@ setup(name=package_name,
       install_requires=[
           'schematics==1.1.1',
           'requests>=2.13.0',
-          'six==1.11.0',
+          'six>=1.11.0,<=1.12.0',
       ],
       )
