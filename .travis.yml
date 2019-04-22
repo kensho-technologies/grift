@@ -6,7 +6,7 @@ python:
 install:
   - pip install --upgrade pip
   - pip install --upgrade setuptools
-  - pip install bandit coveralls pytest pytest-cov pycodestyle
+  - pip install --upgrade bandit coveralls pytest pytest-cov pycodestyle
   - pip install -r requirements.txt
   - pip install -e .
 script:
