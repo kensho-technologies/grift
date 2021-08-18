@@ -1,5 +1,5 @@
 # These requirements are used for testing and development; please update setup.py if needed
 mock>=2.0.0
 requests>=2.7.0
-schematics==1.1.1
+schematics==2.1.1
 six>=1.11.0,<2
